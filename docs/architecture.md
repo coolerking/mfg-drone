@@ -32,7 +32,7 @@
 ## ディレクトリ構成
 
 ```
-mfg_drone/
+mfg-drone/
 ├── README.md
 ├── CLAUDE.md
 ├── pyproject.toml

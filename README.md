@@ -1,4 +1,6 @@
-# mfg_drone
+# mfg-drone
+
+![MGF Drone](docs/images/mfg_drone.png)
 
 Tello EDU を Wi-Fi 経由で制御し、ブラウザ上から手動操作・カメラ映像確認・対象オブジェクトの
 自動追従を行う学習用 Web アプリケーション。フィジカル AI の「知覚 → 判断 → 制御」ループを
@@ -39,7 +41,7 @@ Tello EDU を Wi-Fi 経由で制御し、ブラウザ上から手動操作・カ
 | --- | --- |
 | 機体 | Ryze Tech / DJI Tello EDU（SDK 2.0） |
 | 接続方式 | ステーションモード（Tello を自宅 LAN の子機として接続） |
-| 機体 IP | DHCP 予約で固定する想定（例: `192.168.1.50`） |
+| 機体 IP | DHCP 割り当てによる。ユーザが指定（例: `192.168.11.31`） |
 | 通信 | UDP（コマンド :8889 / ステート :8890 / 映像 :11111） |
 | 開発機 | Ubuntu、Tello と同一セグメントに配置 |
 
@@ -57,7 +59,7 @@ Tello EDU を Wi-Fi 経由で制御し、ブラウザ上から手動操作・カ
 # uv の導入（未インストールの場合）
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
-cd ~/projects/mfg_drone
+cd ~/projects/mfg-drone
 
 # 依存解決と仮想環境作成
 uv sync
