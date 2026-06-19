@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>mfg-drone</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <header class="header">
+    <h1>mfg-drone <span id="mode-badge" class="badge">mock</span></h1>
+    <!-- 緊急着陸: 飛行中は常に表示・有効（safety S-1）-->
+    <button id="btn-emergency" class="btn btn--emergency" disabled title="スペースキーでも発動">
+      &#9632; 緊急着陸
+    </button>
+  </header>
+
+  <main class="layout">
+
+    <!-- 状態パネル（M1 で機能実装） -->
+    <section class="panel panel--state" aria-label="機体状態">
+      <h2>状態</h2>
+      <dl class="state-grid">
+        <dt>接続状態</dt><dd id="val-state">DISCONNECTED</dd>
+        <dt>電池残量</dt><dd id="val-battery">—</dd>
+        <dt>高度</dt>   <dd id="val-height">—</dd>
+        <dt>飛行時間</dt><dd id="val-flighttime">—</dd>
+      </dl>
+      <div class="btn-group">
+        <button id="btn-connect"    class="btn btn--primary">接続</button>
+        <button id="btn-disconnect" class="btn btn--secondary" disabled>切断</button>
+      </div>
+    </section>
+
+    <!-- 映像エリア（M2 で機能実装） -->
+    <section class="panel panel--video" aria-label="カメラ映像">
+      <div class="video-wrapper">
+        <img id="video-frame" src="" alt="映像未取得" />
+        <!-- 状態・電池のオーバーレイ（M2 で実装） -->
+        <div id="video-overlay" class="video-overlay">映像未接続</div>
+      </div>
+      <!-- 対象矩形選択（M4 で実装） -->
+    </section>
+
+    <!-- 操作パネル（M2 で機能実装） -->
+    <section class="panel panel--controls" aria-label="飛行操作">
+      <h2>飛行操作</h2>
+      <div class="btn-group">
+        <button id="btn-takeoff" class="btn btn--primary"   disabled>離陸</button>
+        <button id="btn-land"    class="btn btn--secondary" disabled>着陸</button>
+      </div>
+
+      <!-- 方向ボタン（十字配置） -->
+      <div class="dpad" aria-label="移動操作">
+        <button class="dpad__btn dpad__up"    data-dir="forward" disabled>&#9650;</button>
+        <button class="dpad__btn dpad__left"  data-dir="left"    disabled>&#9664;</button>
+        <button class="dpad__btn dpad__right" data-dir="right"   disabled>&#9654;</button>
+        <button class="dpad__btn dpad__down"  data-dir="back"    disabled>&#9660;</button>
+        <button class="dpad__btn dpad__up2"   data-dir="up"      disabled>&#8679;</button>
+        <button class="dpad__btn dpad__down2" data-dir="down"    disabled>&#8681;</button>
+        <button class="dpad__btn dpad__ccw"   data-dir="ccw"     disabled>&#8634;</button>
+        <button class="dpad__btn dpad__cw"    data-dir="cw"      disabled>&#8635;</button>
+      </div>
+
+      <!-- 追従操作（M4/M5 で機能実装） -->
+      <div class="btn-group">
+        <button id="btn-track-start" class="btn btn--primary"   disabled>追従開始</button>
+        <button id="btn-track-stop"  class="btn btn--secondary" disabled>追従停止</button>
+        <button id="btn-target-clear" class="btn btn--secondary" disabled>対象クリア</button>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <p>mfg-drone — <a href="docs/safety.md">安全について</a> |
+       <span id="ws-status">WebSocket: 未接続</span></p>
+  </footer>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

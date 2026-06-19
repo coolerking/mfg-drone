@@ -86,8 +86,13 @@ uv run uvicorn backend.app.main:app --reload
 | [`docs/milestones.md`](docs/milestones.md) | 検証可能な単位に分割した開発マイルストーン |
 | [`reference/tello-sdk2.md`](reference/tello-sdk2.md) | Tello SDK 2.0 コマンド一次情報 |
 | [`CLAUDE.md`](CLAUDE.md) | Claude Code 向けの作業ガイドとガードレール |
+| [DJI Tello Py](https://djitellopy.readthedocs.io/en/latest/) | ライブラリの使い方やAPIリファレンスが網羅 |
 
 ## 免責
 
 本ソフトウェアは学習目的。飛行に際しては航空法・各自治体のルール・第三者の安全に
 十分配慮し、自己責任で運用すること。
+
+## ライセンス
+
+MIT License。詳細は [`LICENSE`](LICENSE) を参照。

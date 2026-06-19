@@ -85,13 +85,16 @@ mfg-drone/
 DISCONNECTED ───────▶ CONNECTED ─────────▶ MANUAL ───────────────▶ TARGET_SELECTED
      ▲                   │  ▲                 ▲  ▲                        │
      │ disconnect        │  │                 │  │ stop tracking          │ start tracking
-     │ (着地時のみ)       │  │ land            │  └────────────────────────┤
+     │ (着地時のみ)       │  │                 │  └────────────────────────┤
      └───────────────────┘  │                 │                           ▼
-                            │                 └──── lost target ────── TRACKING
+                            │                 └─── lost target ──────  TRACKING
                             │
-   [どの飛行状態からでも]   │  emergency / watchdog
+   [どの飛行状態からでも]   │  land / emergency / watchdog
    ─────────────────────────┴──────────────▶ LANDING ──(着地)──▶ CONNECTED
 ```
+
+> **修正メモ (2026-06-18):** `lost target` の遷移先を `MANUAL` から **`TARGET_SELECTED`** に修正。
+> spec F-05 / safety S-5 に合わせ、対象ロスト時はホバリングして選択状態を保持する。
 
 遷移ルール:
 
@@ -101,13 +104,19 @@ DISCONNECTED ───────▶ CONNECTED ─────────▶ M
 
 ## 制御則（追従）
 
-- トラッカー: OpenCV の CSRT（精度重視）または KCF（速度重視）。初版は CSRT を既定。
+- トラッカー: OpenCV の CSRT（精度重視）。`opencv-contrib-python` が必要（CSRT は contrib 版のみ）。
 - 入力: トラッカーが返す対象矩形の中心 `(cx, cy)` と画面中心 `(W/2, H/2)` のズレ。
 - 出力: Tello の `rc a b c d`（左右 / 前後 / 上下 / 旋回、各 -100〜100）に写像。
-  - 水平方向のズレ → 旋回（yaw）または左右（必要に応じて選択）
-  - 矩形サイズの増減（対象との距離の代理指標）→ 前後
-  - 各軸に上限を設け、急激な速度変化を抑制（safety と連動）
-- 対象ロスト時は即座に `rc 0 0 0 0`（ホバリング）にフォールバック。
+
+  **初版の制御軸（平面追従）:**
+  - 水平ズレ `(cx - W/2)` → **旋回（yaw = rc.d）**（正方向: 右、つまり右ズレ → 時計回り）
+  - 矩形サイズの増減（対象との距離の代理指標）→ **前後（pitch = rc.b）**
+  - **縦（throttle = rc.c）は初版では制御しない。** `c = 0` 固定。
+  - 左右ストラフ（rc.a）も初版では使わない。`a = 0` 固定。
+  - 各軸に上限（±30 を暫定値として提案。⚠️ M5 着手前に調整）を設け、急激な速度変化を抑制。
+
+- 矩形座標は**正規化 (0.0〜1.0)** でクライアント → サーバに送り、サーバ側でフレーム解像度へ変換する。
+- 対象ロスト時は即座に `rc 0 0 0 0`（ホバリング）にフォールバック（safety S-5）。
 
 ## API 仕様（ドラフト）
 
@@ -119,12 +128,12 @@ REST（操作の起点）:
 | POST | `/api/disconnect` | 切断（着地時のみ） | F-07 |
 | POST | `/api/takeoff` | 離陸（人間の明示操作） | F-02 |
 | POST | `/api/land` | 通常着陸 | F-02 |
-| POST | `/api/move` | 手動移動 `{axis, value}` | F-02 |
+| POST | `/api/move` | 手動移動 `{direction, value}` — **離散cm移動**（20–500cm / 1–360度。`forward/back/left/right/up/down/cw/ccw`）| F-02 |
 | POST | `/api/target` | 対象指定 `{x, y, w, h}` | F-04 |
 | POST | `/api/target/clear` | 対象解除 | F-04 |
 | POST | `/api/track/start` | 追従開始 | F-05 |
 | POST | `/api/track/stop` | 追従停止 | F-05 |
-| POST | `/api/emergency` | 緊急着陸（最優先・常時受理） | F-06 |
+| POST | `/api/emergency` | 緊急着陸（最優先・常時受理）— **`land` コマンドを発行。SDK の `emergency`（モーター停止＝落下）ではない** | F-06 |
 | GET  | `/api/state` | 現在状態・ステート取得 | F-01/03 |
 
 WebSocket:

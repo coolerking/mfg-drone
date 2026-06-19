@@ -1,0 +1,202 @@
+/* mfg-drone スタイルシート（M0: 骨格） */
+
+:root {
+  --color-bg:        #1a1a2e;
+  --color-surface:   #16213e;
+  --color-surface2:  #0f3460;
+  --color-accent:    #e94560;
+  --color-ok:        #2ecc71;
+  --color-warn:      #f39c12;
+  --color-text:      #eaeaea;
+  --color-muted:     #8a8a9a;
+  --radius:          6px;
+  --gap:             12px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: "Segoe UI", sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── ヘッダー ── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  background: var(--color-surface);
+  border-bottom: 2px solid var(--color-accent);
+}
+
+.header h1 { font-size: 1.3rem; letter-spacing: .05em; }
+
+.badge {
+  font-size: .65rem;
+  background: var(--color-surface2);
+  color: var(--color-warn);
+  padding: 2px 8px;
+  border-radius: 999px;
+  vertical-align: middle;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+/* ── レイアウト ── */
+.layout {
+  display: grid;
+  grid-template-columns: 220px 1fr 200px;
+  grid-template-rows: auto;
+  gap: var(--gap);
+  padding: var(--gap);
+  flex: 1;
+}
+
+.panel {
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  padding: 14px;
+}
+
+.panel h2 {
+  font-size: .85rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--color-muted);
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--color-surface2);
+  padding-bottom: 6px;
+}
+
+/* ── 状態パネル ── */
+.state-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 10px;
+  row-gap: 5px;
+  font-size: .85rem;
+  margin-bottom: 14px;
+}
+
+.state-grid dt { color: var(--color-muted); }
+.state-grid dd { font-weight: 600; }
+
+/* ── 映像エリア ── */
+.panel--video {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  overflow: hidden;
+}
+
+.video-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#video-frame {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.video-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-muted);
+  font-size: .9rem;
+  pointer-events: none;
+}
+
+/* ── ボタン ── */
+.btn-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.btn {
+  padding: 8px 14px;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: .85rem;
+  font-weight: 600;
+  transition: opacity .15s;
+}
+
+.btn:disabled { opacity: .35; cursor: not-allowed; }
+
+.btn--primary   { background: var(--color-surface2); color: var(--color-text); }
+.btn--secondary { background: #2a2a4a; color: var(--color-text); }
+
+.btn--emergency {
+  background: var(--color-accent);
+  color: #fff;
+  font-size: 1rem;
+  padding: 10px 20px;
+}
+
+/* 緊急着陸ボタンは飛行中に有効化（JS から .is-flying クラスを body に付与） */
+body:not(.is-flying) .btn--emergency { opacity: .3; pointer-events: none; }
+
+/* ── 方向パッド ── */
+.dpad {
+  display: grid;
+  grid-template-areas:
+    ".    up2   up   .  "
+    "ccw  left  .    right"
+    ".    down2 down cw ";
+  grid-template-columns: repeat(4, 44px);
+  grid-template-rows:    repeat(3, 44px);
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.dpad__btn {
+  background: var(--color-surface2);
+  color: var(--color-text);
+  border: none;
+  border-radius: var(--radius);
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background .1s;
+}
+
+.dpad__btn:disabled { opacity: .3; cursor: not-allowed; }
+.dpad__btn:not(:disabled):hover { background: #1a5090; }
+
+.dpad__up    { grid-area: up;    }
+.dpad__down  { grid-area: down;  }
+.dpad__left  { grid-area: left;  }
+.dpad__right { grid-area: right; }
+.dpad__up2   { grid-area: up2;   }
+.dpad__down2 { grid-area: down2; }
+.dpad__ccw   { grid-area: ccw;   }
+.dpad__cw    { grid-area: cw;    }
+
+/* ── フッター ── */
+.footer {
+  padding: 8px 20px;
+  background: var(--color-surface);
+  font-size: .75rem;
+  color: var(--color-muted);
+  border-top: 1px solid var(--color-surface2);
+}
+
+.footer a { color: var(--color-muted); }
